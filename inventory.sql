@@ -9,7 +9,6 @@ CREATE TABLE [h9].[factInventory_qualityLog]
 );
 
 
-
 DROP PROCEDURE IF EXISTS [h9].[factInventory_publish];
 GO
 CREATE PROCEDURE [h9].[factInventory_publish]
@@ -17,43 +16,23 @@ CREATE PROCEDURE [h9].[factInventory_publish]
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Quality check: Ensure there are records to process for the given BatchId
-    IF NOT EXISTS (SELECT 1 FROM [h9].[factInventory_stg] WHERE [rowBatchKey] = @BatchId)
-    BEGIN
-        INSERT INTO [h9].[factInventory_qualityLog] (BatchID, CheckType, CheckResult, ErrorMessage)
-        VALUES (@BatchId, 'Records Existence', 'Fail', 'No records found for the provided BatchId in the staging table.');
-
-        RAISERROR ('No records found for the provided BatchId in the staging table.', 16, 1);
-        RETURN;
-    END
-    ELSE
-    BEGIN
-        INSERT INTO [h9].[factInventory_qualityLog] (BatchID, CheckType, CheckResult)
-        VALUES (@BatchId, 'Records Existence', 'Pass');
-    END
-
-    -- Quality check: Ensure there are no null or empty idStore or idProduct fields
-    IF EXISTS (
-        SELECT 1 
-        FROM [h9].[factInventory_stg] 
-        WHERE ([rowBatchKey] = @BatchId AND (ISNULL([idStore], '') = '' OR ISNULL([idProduct], '') = ''))
-    )
-    BEGIN
-        INSERT INTO [h9].[factInventory_qualityLog] (BatchID, CheckType, CheckResult, ErrorMessage)
-        VALUES (@BatchId, 'Null or Empty Checks', 'Fail', 'idStore or idProduct contains null or empty values in the staging table for the provided BatchId.');
-
-        RAISERROR ('idStore or idProduct contains null or empty values in the staging table for the provided BatchId.', 16, 1);
-        RETURN;
-    END
-    ELSE
-    BEGIN
-        INSERT INTO [h9].[factInventory_qualityLog] (BatchID, CheckType, CheckResult)
-        VALUES (@BatchId, 'Null or Empty Checks', 'Pass');
-    END
-
     BEGIN TRY
-        -- Merge data from staging table into target table
+        -- Log quality issues
+        INSERT INTO [h9].[factInventory_qualityLog] (BatchId, RowKey, Issue)
+        SELECT 
+            @BatchId, 
+            [rowKey],
+            CASE 
+                WHEN [idStore] IS NULL OR [idStore] < 0 THEN 'Invalid idStore'
+                WHEN [idProduct] IS NULL OR [idProduct] < 0 THEN 'Invalid idProduct'
+                WHEN [InStock] IS NULL OR [InStock] < 0 THEN 'Invalid InStock'
+                ELSE NULL
+            END
+        FROM [h9].[factInventory_stg]
+        WHERE [rowBatchKey] = @BatchId
+        AND ([idStore] IS NULL OR [idStore] < 0 OR [idProduct] IS NULL OR [idProduct] < 0 OR [InStock] IS NULL OR [InStock] < 0);
+
+        -- Merge data from staging table into target table, excluding rows with logged issues
         MERGE INTO [h9].[factInventory] AS TRG
         USING (
             SELECT 
@@ -66,6 +45,9 @@ BEGIN
                 [h9].[factInventory_stg]
             WHERE 
                 [rowBatchKey] = @BatchId
+                AND [idStore] >= 0
+                AND [idProduct] >= 0
+                AND [InStock] >= 0
         ) AS SRC
         ON SRC.rowKey = TRG.rowKey
         AND SRC.rowBatchKey = @BatchId

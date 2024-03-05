@@ -1,0 +1,35 @@
+{
+	"name": "src_dimStores",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vgbi_Src",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "city",
+				"type": "nvarchar"
+			},
+			{
+				"name": "location",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "data",
+			"table": "stores"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

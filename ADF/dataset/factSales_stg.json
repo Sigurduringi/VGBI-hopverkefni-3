@@ -1,0 +1,62 @@
+{
+	"name": "factSales_stg",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vgbi_nem",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "rowKey",
+				"type": "nvarchar"
+			},
+			{
+				"name": "date",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "receipt",
+				"type": "nvarchar"
+			},
+			{
+				"name": "idStore",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "idProduct",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "unitsSold",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "rowBatchKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "rowCreated",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "h9",
+			"table": "factSales_stg"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

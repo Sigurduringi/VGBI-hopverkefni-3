@@ -1,0 +1,51 @@
+{
+	"name": "src_calendar",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vgbi_Src",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "datekey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "date",
+				"type": "date"
+			},
+			{
+				"name": "year",
+				"type": "nvarchar"
+			},
+			{
+				"name": "monthNo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "monthName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YYYY-MM",
+				"type": "nvarchar"
+			},
+			{
+				"name": "week",
+				"type": "nvarchar"
+			},
+			{
+				"name": "yearWeek",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "data",
+			"table": "calendar"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

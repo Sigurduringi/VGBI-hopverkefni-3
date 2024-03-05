@@ -1,0 +1,38 @@
+{
+	"name": "src_factInv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vgbi_Src",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "idStore",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "idProduct",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "InStock",
+				"type": "smallint",
+				"precision": 5
+			}
+		],
+		"typeProperties": {
+			"schema": "data",
+			"table": "inventory"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

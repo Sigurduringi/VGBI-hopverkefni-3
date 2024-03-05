@@ -1,0 +1,9 @@
+{
+	"name": "hopverkefni3",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bcf22603-6c1f-4379-b7ee-9c3b595ac25b",
+		"tenantId": "94d92b60-e6fa-43c0-8005-e73e02812c34"
+	}
+}
